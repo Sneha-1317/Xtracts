@@ -1,0 +1,7 @@
+
+Pillow
+opencv-python
+numpy
+pandas
+ImageHash
+tqdm
