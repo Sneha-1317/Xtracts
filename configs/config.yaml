@@ -1,0 +1,57 @@
+paths:
+  raw_dir: data/raw                         # put your 2000+ receipt images here (subfolders are fine)
+  inventory_csv: data/interim/inventory.csv # every file, with validity + hashes
+  clean_manifest_csv: data/processed/manifest_clean.csv  # one row per unique, valid receipt
+  clean_images_dir: data/interim/images_clean            # normalized copies (written with --export)
+  duplicates_report_csv: reports/duplicates_report.csv
+  summary_json: reports/dataset_summary.json
+  review_dir: reports/duplicate_review      # contact sheets of near-duplicate clusters
+  ocr_dir: data/annotations/ocr             # one <image_id>.json per receipt
+  ocr_summary_csv: data/annotations/ocr_summary.csv
+  ocr_errors_csv: data/annotations/ocr_errors.csv
+  ocr_preview_dir: reports/ocr_preview      # images with OCR boxes drawn on them
+  labels_dir: data/annotations/labels       # one <image_id>.json per receipt (auto + reviewed labels)
+  splits_dir: data/processed/splits         # train/val/test .jsonl for LayoutLMv3
+  model_dir: models/layoutlmv3-receipts     # fine-tuned model, processor, metrics
+  colab_bundle: xtracts_colab_bundle.zip    # small zip to upload to Colab/Kaggle
+  eval_dir: reports/evaluation              # Stage 6 outputs (metrics.json, field_metrics.csv, summary.md)
+  app_db: data/app/expenses.db              # Stage 7: SQLite database of confirmed expenses
+  app_uploads_dir: data/app/uploads         # Stage 7: copies of uploaded receipt images
+
+validation:
+  min_side: 300            # px; smaller images are too low-res for OCR
+  max_pixels: 50000000     # guards against decompression bombs
+
+dedup:
+  phash_threshold: 6       # max Hamming distance (0-64) for perceptual hash
+  dhash_threshold: 6       # max Hamming distance (0-64) for difference hash
+  aspect_tolerance: 0.05   # near-duplicates must have similar width/height ratio
+
+export:
+  max_side: null           # e.g. 2000 to cap resolution; null keeps original size
+  jpeg_quality: 95
+
+workers: 4
+seed: 42
+
+ocr:
+  lang: en
+  use_gpu: false
+  det_limit_side_len: 1600   # receipts are tall; PaddleOCR's default (960) shrinks small text away
+  min_conf: 0.0              # drop OCR lines below this confidence (0 keeps everything)
+
+split:
+  val_size: 0.15
+  test_size: 0.15
+
+training:
+  model_name: microsoft/layoutlmv3-base
+  max_length: 512            # LayoutLMv3 limit; longer receipts become overlapping windows
+  overlap_words: 30          # words shared between consecutive windows
+  epochs: 15
+  learning_rate: 5.0e-5
+  batch_size: 4
+  grad_accum_steps: 2        # effective batch = batch_size * grad_accum_steps
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  early_stopping_patience: 4

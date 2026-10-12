@@ -1,24 +1,35 @@
-
-# Python cache files
+# Python
 __pycache__/
 *.py[cod]
-
-# Virtual environments
 .venv/
 venv/
-env/
-new_env/
-
-# Environment variables and secrets
-.env
-.env.*
-
-# Jupyter Notebook temporary files
+*.egg-info/
+.pytest_cache/
 .ipynb_checkpoints/
 
-# VS Code workspace settings
-.vscode/
+# Data & models are versioned with DVC, not Git
+/data/raw/*
+/data/interim/*
+/data/processed/*
+/data/annotations/*
+/models/*
+!**/.gitkeep
 
-# Operating system files
+# Experiment tracking / app state
+mlruns/
+mlartifacts/
+*.db
+*.sqlite3
+lightning_logs/
+
+# Generated reports (keep small summaries if you want: remove this line)
+/reports/*
+!/reports/.gitkeep
+
+# OS / editor
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
+mlflow.db
+data/app/

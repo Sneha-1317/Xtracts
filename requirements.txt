@@ -1,7 +1,29 @@
+# Xtracts - receipt expense analytics (LayoutLMv3)
+# Python 3.10 or 3.11 recommended.
+#   python -m venv .venv
+#   source .venv/bin/activate        # Windows: .venv\Scripts\activate
+#   pip install -r requirements.txt
 
-Pillow
-opencv-python
-numpy
-pandas
-ImageHash
-tqdm
+numpy>=1.26,<2.0   # PaddlePaddle 2.x needs NumPy 1.x
+pandas>=2.1
+Pillow>=10.0
+ImageHash>=4.3
+PyYAML>=6.0
+scikit-learn>=1.3        # merchant-grouped train/val/test split
+tqdm>=4.66
+pytest>=8.0
+
+# --- Step 2: OCR (pinned pair known to work together on Windows/Linux, Python 3.10) ---
+paddlepaddle==2.6.2
+paddleocr==2.9.1
+
+# --- Step 3: label review app ---
+streamlit>=1.32
+
+# --- Step 5: LayoutLMv3 training (on Colab/Kaggle these come preinstalled or install in seconds) ---
+torch>=2.1
+transformers>=4.44,<5    # 5.x changed tokenizer APIs; the code is tested on 4.57
+
+# --- Stage 6/7 ---
+mlflow>=2.14             # optional: experiment tracking in scripts/07_evaluate.py (skipped if not installed)
+python-docx>=1.1         # only for scripts/08_fill_report.py
